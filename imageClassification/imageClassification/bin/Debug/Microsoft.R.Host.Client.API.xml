@@ -1,0 +1,671 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.R.Host.Client.API</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.R.Host.Client.DataFrame">
+            <summary>
+            Represents R data frame
+            </summary>
+        </member>
+        <member name="P:Microsoft.R.Host.Client.DataFrame.ColumnNames">
+            <summary>
+            Column names
+            </summary>
+        </member>
+        <member name="P:Microsoft.R.Host.Client.DataFrame.RowNames">
+            <summary>
+            Row names
+            </summary>
+        </member>
+        <member name="P:Microsoft.R.Host.Client.DataFrame.Data">
+            <summary>
+            Data frame data
+            </summary>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.DataFrame.#ctor(System.Collections.Generic.IReadOnlyCollection{System.String},System.Collections.Generic.IReadOnlyCollection{System.String},System.Collections.Generic.IReadOnlyCollection{System.Collections.Generic.IReadOnlyCollection{System.Object}})">
+            <summary>
+            Constructs data frame
+            </summary>
+            <param name="rowNames">Row names</param>
+            <param name="columnNames">Column names</param>
+            <param name="data">Data</param>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.DataFrame.GetColumn(System.String)">
+            <summary>
+            Retrieves data frame column by name
+            </summary>
+            <param name="name">Column name</param>
+            <returns>Column data</returns>
+        </member>
+        <member name="T:Microsoft.R.Host.Client.IRObjectInformation">
+            <summary>
+            Describes R object
+            </summary>
+        </member>
+        <member name="P:Microsoft.R.Host.Client.IRObjectInformation.TypeName">
+            <summary>
+            R object type name (in R terms)
+            </summary>
+        </member>
+        <member name="P:Microsoft.R.Host.Client.IRObjectInformation.Length">
+            <summary>
+            Object length (such an number of elements in a list)
+            </summary>
+        </member>
+        <member name="P:Microsoft.R.Host.Client.IRObjectInformation.Dim">
+            <summary>
+            Number of dimensions in the object.
+            </summary>
+        </member>
+        <member name="T:Microsoft.R.Host.Client.RSessionOutput">
+            <summary>
+            Describes session output
+            </summary>
+        </member>
+        <member name="P:Microsoft.R.Host.Client.RSessionOutput.Output">
+            <summary>
+            Result of the expression execution as it would appear 
+            in the R console: such as '[1] 2' when '1+1' is executed.
+            </summary>
+        </member>
+        <member name="P:Microsoft.R.Host.Client.RSessionOutput.Errors">
+            <summary>
+            Error messages
+            </summary>
+        </member>
+        <member name="T:Microsoft.R.Host.Client.RHostSessionCallback">
+            <summary>
+            Implements callback for R session. Client code can derive
+            from this class and override methods allowing to receive
+            additional information and handle requsts from the R session.
+            </summary>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSessionCallback.ShowErrorMessageAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Called when R session wants to display error message box.
+            </summary>
+            <param name="message">Error message</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>Awaitable task</returns>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSessionCallback.ShowMessageAsync(System.String,Microsoft.Common.Core.Shell.MessageButtons,System.Threading.CancellationToken)">
+            <summary>
+            Called when R session wants to display a message box with Yes/No/Ok/Cancel buttons.
+            </summary>
+            <param name="message">Error message</param>
+            <param name="buttons">Message box buttons</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>Button pressed</returns>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSessionCallback.PlotAsync(System.Byte[])">
+            <summary>
+            Called when R sessions needs to display a plot
+            </summary>
+            <param name="image">Image data</param>
+            <returns>Awaitable task</returns>
+        </member>
+        <member name="P:Microsoft.R.Host.Client.RHostSessionCallback.PlotDeviceProperties">
+            <summary>
+            Called by R before plotting to get information on the image dimensions and resolution
+            </summary>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSessionCallback.Output(System.String,System.Boolean)">
+            <summary>
+            Called by R to output text or error message to console
+            </summary>
+            <param name="message">Message to display</param>
+            <param name="error">Indicates if message is an error message</param>
+        </member>
+        <member name="T:Microsoft.R.Host.Client.RFunctionArg">
+            <summary>
+            Represents argument to R function
+            </summary>
+        </member>
+        <member name="P:Microsoft.R.Host.Client.RFunctionArg.Name">
+            <summary>
+            Argument name
+            </summary>
+        </member>
+        <member name="P:Microsoft.R.Host.Client.RFunctionArg.Value">
+            <summary>
+            Argument value
+            </summary>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RFunctionArg.#ctor(System.String)">
+            <summary>
+            Creates unnamed argument
+            </summary>
+            <param name="value">Argument value</param>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RFunctionArg.#ctor(System.String,System.Object)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="name">Argument name</param>
+            <param name="value">Argument value</param>
+        </member>
+        <member name="T:Microsoft.R.Host.Client.RHostSessionExtensions">
+            <summary>
+            Additional helpers for R session
+            </summary>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSessionExtensions.CreateListAsync``1(Microsoft.R.Host.Client.IRHostSession,System.String,System.Collections.Generic.IEnumerable{``0},System.Threading.CancellationToken)">
+            <summary>
+            Creates list of objects in R from list of .NET objects
+            </summary>
+            <typeparam name="T">.NET object type</typeparam>
+            <param name="session">R session</param>
+            <param name="name">Name of the variable to assign the R list to</param>
+            <param name="list">List of .NET objects</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <exception cref="T:System.ArgumentNullException" />
+            <exception cref="T:System.ArgumentException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSessionExtensions.CreateDataFrameAsync(Microsoft.R.Host.Client.IRHostSession,System.String,Microsoft.R.Host.Client.DataFrame,System.Threading.CancellationToken)">
+            <summary>
+            Creates R data frame from .NET <see cref="T:Microsoft.R.Host.Client.DataFrame"/>
+            </summary>
+            <param name="session">R session</param>
+            <param name="name">Name of the variable to assign the R list to</param>
+            <param name="df">.NET data frame</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <exception cref="T:System.ArgumentNullException" />
+            <exception cref="T:System.ArgumentException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSessionExtensions.GetLengthAsync(Microsoft.R.Host.Client.IRHostSession,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves length of R object
+            </summary>
+            <param name="session">R session</param>
+            <param name="expression">Expression to evaluate</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>Object kength</returns>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSessionExtensions.GetTypeNameAsync(Microsoft.R.Host.Client.IRHostSession,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves R type name for an object
+            </summary>
+            <param name="session">R session</param>
+            <param name="expression">Expression to evaluate</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>R type name</returns>
+        </member>
+        <member name="T:Microsoft.R.Host.Client.RHostSession">
+            <summary>
+            Represents running R session
+            </summary>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSession.InvokeAsync(System.String,System.Threading.CancellationToken,System.Object[])">
+            <summary>
+            Invokes R function with a set of arguments. Does not return any value.
+            </summary>
+            <param name="function">Function name</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <param name="args">Function arguments</param>
+            <exception cref="T:System.ArgumentException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSession.InvokeAndReturnAsync(System.String,System.Threading.CancellationToken,System.Object[])">
+            <summary>
+            Invokes R function with a set of arguments. Returns name of a 
+            temporary variable that received the result.
+            </summary>
+            <param name="function">Function name</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <param name="args">Function arguments</param>
+            <returns>Name of the variable that holds the data returned by the function</returns>
+            <exception cref="T:System.ArgumentException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSession.GetListAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves list of unknown type from R variable
+            </summary>
+            <param name="expression">Expression (variable name) to fetch as list</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>List of objects</returns>
+            <exception cref="T:System.ArgumentException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSession.GetListAsync``1(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves list of specific type from R variable
+            </summary>
+            <param name="expression">Expression (variable name) to fetch as list</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>List of values of the provided type</returns>
+            <exception cref="T:System.ArgumentException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSession.GetDataFrameAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves data frame from R variable
+            </summary>
+            <param name="expression">Expression (variable name) to fetch as data frame</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>Data frame</returns>
+            <exception cref="T:System.ArgumentException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSession.GetInformationAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves information about R object or expression
+            </summary>
+            <param name="expression">Expression (variable name) to describe</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>Object information</returns>
+            <exception cref="T:System.ArgumentException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="P:Microsoft.R.Host.Client.RHostSession.HostStarted">
+            <summary>
+            Awaitable task that completes when R host process has started
+            </summary>
+        </member>
+        <member name="P:Microsoft.R.Host.Client.RHostSession.IsHostRunning">
+            <summary>
+            Indicates of R host is running
+            </summary>
+        </member>
+        <member name="P:Microsoft.R.Host.Client.RHostSession.IsRemote">
+            <summary>
+            Tells if R session is local or remote
+            </summary>
+        </member>
+        <member name="E:Microsoft.R.Host.Client.RHostSession.Connected">
+            <summary>
+            Fires when R session is connected
+            </summary>
+        </member>
+        <member name="E:Microsoft.R.Host.Client.RHostSession.Disconnected">
+            <summary>
+            Fires when R session has disconnected
+            </summary>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSession.Create(System.String,System.String)">
+            <summary>
+            Creates R session
+            </summary>
+            <param name="name">Session name</param>
+            <param name="url">Path to local R interpreter (folder with R.dll) or URL to the remote machine</param>
+            <returns>R session</returns>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSession.TerminateBroker">
+            <summary>
+            Terminates broker process. If any sessions are active, they will terminated as well.
+            </summary>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSession.Dispose">
+            <summary>
+            Terminates and disposes R session
+            </summary>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSession.CancelAllAsync(System.Threading.CancellationToken)">
+            <summary>
+            Attempts to cancel all running tasks in the R Host. 
+            This is similar to 'Interrupt R' command.
+            </summary>
+            <param name="cancellationToken">Cancellation token</param>
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSession.StartHostAsync(Microsoft.R.Host.Client.IRHostSessionCallback,System.String,System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Starts R host process.
+            </summary>
+            <param name="callback">
+            A set of callbacks that are called when R engine requests certain operation
+            that are usually provided by the application
+            </param>
+            <param name="workingDirectory">R working directory</param>
+            <param name="codePage">R code page to set</param>
+            <param name="timeout">Timeout to wait for the host process to start</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSession.StopHostAsync(System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Stops R host process
+            </summary>
+            <param name="waitForShutdown">
+            If true, the method will wait for the R Host process to exit.
+            If false, the process will receive termination request and the call will return immediately.
+            </param>
+            <param name="cancellationToken">Cancellation token</param>
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSession.ExecuteAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Executes R code
+            </summary>
+            <param name="expression">Expression or block of R code to execute</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <exception cref="T:System.ArgumentNullException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSession.ExecuteAndOutputAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Executes R code and returns output as it would appear in the interactive window.
+            </summary>
+            <param name="expression">Expression or block of R code to execute</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <exception cref="T:System.ArgumentNullException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSession.EvaluateAsync``1(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Evaluates the provided expression and returns the result.
+            This method is typically used to fetch variable value and return it to .NET code.
+            </summary>
+            <typeparam name="T">
+            Type of the variable expected. This must be a simple type.
+            To return collections use <see cref="M:Microsoft.R.Host.Client.RHostSession.GetListAsync(System.String,System.Threading.CancellationToken)"/> and <see cref="M:Microsoft.R.Host.Client.RHostSession.GetDataFrameAsync(System.String,System.Threading.CancellationToken)"/>
+            </typeparam>
+            <param name="expression">Expression or block of R code to execute</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>The variable or expression value</returns>
+            <exception cref="T:System.ArgumentException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.RHostSession.PlotAsync(System.String,System.Int32,System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Passes expression the the R plot function and returns plot image data.
+            </summary>
+            <param name="expression">Expression or variable name to plot</param>
+            <param name="width">Image width</param>
+            <param name="height">Image height</param>
+            <param name="dpi">Image resolution</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>Image data</returns>
+            <exception cref="T:System.ArgumentException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="T:Microsoft.R.Host.Client.IRHostSession">
+            <summary>
+            Represents running session or connection to the process
+            that hosts R environment (engine).
+            </summary>
+        </member>
+        <member name="E:Microsoft.R.Host.Client.IRHostSession.Connected">
+            <summary>
+            Fires when R Host process has started. It is not fully initialized yet. 
+            Await on <see cref="P:Microsoft.R.Host.Client.IRHostSession.HostStarted"/> task to detect when host is fully initialized.
+            </summary>
+        </member>
+        <member name="E:Microsoft.R.Host.Client.IRHostSession.Disconnected">
+            <summary>
+            Fires when host has been terminated. It may have crashed or exited normally.
+            </summary>
+        </member>
+        <member name="P:Microsoft.R.Host.Client.IRHostSession.HostStarted">
+            <summary>
+            Awaitable task that completes when R host process has finished initialization.
+            </summary>
+        </member>
+        <member name="P:Microsoft.R.Host.Client.IRHostSession.IsHostRunning">
+            <summary>
+            Indicates if R host process is currently running.
+            </summary>
+        </member>
+        <member name="P:Microsoft.R.Host.Client.IRHostSession.IsRemote">
+            <summary>
+            Indicates if R session is remote.
+            </summary>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.IRHostSession.StartHostAsync(Microsoft.R.Host.Client.IRHostSessionCallback,System.String,System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Starts R host process.
+            </summary>
+            <param name="callback">
+            A set of callbacks that are called when R engine requests certain operation
+            that are usually provided by the application
+            </param>
+            <param name="workingDirectory">R working directory</param>
+            <param name="codePage">R code page to set</param>
+            <param name="timeout">Timeout to wait for the host process to start</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.IRHostSession.StopHostAsync(System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Stops R host process
+            </summary>
+            <param name="waitForShutdown">
+            If true, the method will wait for the R Host process to exit.
+            If false, the process will receive termination request and the call will return immediately.
+            </param>
+            <param name="cancellationToken">Cancellation token</param>
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.IRHostSession.CancelAllAsync(System.Threading.CancellationToken)">
+            <summary>
+            Attempts to cancel all running tasks in the R Host. 
+            This is similar to 'Interrupt R' command.
+            </summary>
+            <param name="cancellationToken">Cancellation token</param>
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.IRHostSession.ExecuteAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Executes R code
+            </summary>
+            <param name="expression">Expression or block of R code to execute</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <exception cref="T:System.ArgumentNullException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.IRHostSession.ExecuteAndOutputAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Executes R code and returns output as it would appear in the interactive window.
+            </summary>
+            <param name="expression">Expression or block of R code to execute</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <exception cref="T:System.ArgumentNullException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.IRHostSession.EvaluateAsync``1(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Evaluates the provided expression and returns the result.
+            This method is typically used to fetch variable value and return it to .NET code.
+            </summary>
+            <typeparam name="T">
+            Type of the variable expected. This must be a simple type.
+            To return collections use <see cref="M:Microsoft.R.Host.Client.IRHostSession.GetListAsync(System.String,System.Threading.CancellationToken)"/> and <see cref="M:Microsoft.R.Host.Client.IRHostSession.GetDataFrameAsync(System.String,System.Threading.CancellationToken)"/>
+            </typeparam>
+            <param name="expression">Expression or block of R code to execute</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>The variable or expression value</returns>
+            <exception cref="T:System.ArgumentException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.IRHostSession.InvokeAsync(System.String,System.Threading.CancellationToken,System.Object[])">
+            <summary>
+            Invokes R function with a set of arguments. Does not return any value.
+            </summary>
+            <param name="function">Function name</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <param name="args">Function arguments</param>
+            <exception cref="T:System.ArgumentException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.IRHostSession.InvokeAndReturnAsync(System.String,System.Threading.CancellationToken,System.Object[])">
+            <summary>
+            Invokes R function with a set of arguments. Returns name of a 
+            temporary variable that received the result.
+            </summary>
+            <param name="function">Function name</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <param name="args">Function arguments</param>
+            <returns>Name of the variable that holds the data returned by the function</returns>
+            <exception cref="T:System.ArgumentException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.IRHostSession.GetListAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves list of unknown type from R variable
+            </summary>
+            <param name="expression">Expression (variable name) to fetch as list</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>List of objects</returns>
+            <exception cref="T:System.ArgumentException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.IRHostSession.GetListAsync``1(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves list of specific type from R variable
+            </summary>
+            <param name="expression">Expression (variable name) to fetch as list</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>List of values of the provided type</returns>
+            <exception cref="T:System.ArgumentException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.IRHostSession.GetDataFrameAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves data frame from R variable
+            </summary>
+            <param name="expression">Expression (variable name) to fetch as data frame</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>Data frame</returns>
+            <exception cref="T:System.ArgumentException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.IRHostSession.GetInformationAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves information about R object or expression
+            </summary>
+            <param name="expression">Expression (variable name) to describe</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>Object information</returns>
+            <exception cref="T:System.ArgumentException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="M:Microsoft.R.Host.Client.IRHostSession.PlotAsync(System.String,System.Int32,System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Passes expression the the R plot function and returns plot image data.
+            </summary>
+            <param name="expression">Expression or variable name to plot</param>
+            <param name="width">Image width</param>
+            <param name="height">Image height</param>
+            <param name="dpi">Image resolution</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>Image data</returns>
+            <exception cref="T:System.ArgumentException" />
+            <exception cref="T:Microsoft.R.Host.Client.REvaluationException" />
+            <exception cref="T:System.OperationCanceledException" />
+            <exception cref="T:Microsoft.R.Host.Client.Host.RHostDisconnectedException" />
+        </member>
+        <member name="T:Microsoft.R.Host.Client.IRHostSessionCallback">
+            <summary>
+            Implemented by the application that uses Microsoft.R.Host.Client.API
+            Provides facilities to respond to the R engine requests, if any.
+            Stub class <see cref="T:Microsoft.R.Host.Client.RHostSessionCallback"/> provides basic implementation.
+            </summary>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.IRHostSessionCallback.ShowErrorMessageAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Displays error message in the application-specific UI
+            </summary>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.IRHostSessionCallback.ShowMessageAsync(System.String,Microsoft.Common.Core.Shell.MessageButtons,System.Threading.CancellationToken)">
+            <summary>
+            Displays user prompt with specified buttons in the application-specific UI
+            </summary>
+        </member>
+        <member name="T:Microsoft.R.Host.Client.Converter">
+            <summary>
+            Utility class that provides methods for data conversion between R and C#
+            </summary>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.Converter.ToListOf``1(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Converts collection of objects to a list of specific type
+            </summary>
+            <typeparam name="T">Target type</typeparam>
+            <param name="e">Objects to convert</param>
+            <returns>List of objects converted to the target type</returns>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.Converter.ToRLiteral(System.Object)">
+            <summary>
+            Converts object to a R string. For example, 'bool' to "TRUE" or "FALSE".
+            </summary>
+            <param name="value">Object value</param>
+            <returns>String representing object value in R syntax</returns>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.Converter.ToRListConstructor(System.Collections.IEnumerable)">
+            <summary>
+            Converts collection of object to R expression that creates
+            R list from the provided collection of .NET objects.
+            </summary>
+            <param name="e">Collection of objects</param>
+            <returns>Expression in R syntax that creates list ob objects</returns>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.Converter.ToRDataFrameConstructor(Microsoft.R.Host.Client.DataFrame)">
+            <summary>
+            Converts .NET data frame object to R expression that creates
+            R data frame from the provided .NET object.
+            </summary>
+            <param name="df">Data frame</param>
+            <returns>Expression in R syntax that creates R data frame</returns>
+        </member>
+        <member name="M:Microsoft.R.Host.Client.Converter.ToRFunctionCall(System.String,System.Object[])">
+            <summary>
+            Constructs R function call from funtion name and arguments
+            </summary>
+            <param name="function">Function name</param>
+            <param name="arguments">Function arguments</param>
+            <returns>Expression in R syntax that invokes function with arguments</returns>
+        </member>
+    </members>
+</doc>
