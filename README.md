@@ -17,4 +17,10 @@ require(tree)
 library(rpart.plot)
 require(rpart)
 ### How to Use
+Download imageClassification directory
+open imageClassification/bin/Debug/imageClassification.exe
+choose a image to be classify
+manually select the class
+create dicision tree 
+using DBSCAN to Classify the whole image
 
